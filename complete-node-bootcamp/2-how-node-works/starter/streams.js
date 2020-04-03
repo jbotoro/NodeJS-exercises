@@ -18,19 +18,34 @@ server.on('request', (req,res) => {
     // to the client, whereas with streams we send each "chunk" of data as its read
     // instead of waiting for the whole file to be read
 
+    // Downside of this approach: readable is much faster than sending the response
+    // stream ... leads to backpressure ( response cant send data as fast as it is
+    // receiving it from the file it is reading)
+
+
+    // const readable = fs.createReadStream('test-file.txt');
+    // readable.on('data', (chunk) => {
+    //     res.write(chunk);
+    // });
+    // // response end necessary when whole file has been read
+    // readable.on('end', () => {
+    //     res.end();
+    // });
+    // readable.on('error', err => {
+    //     console.log(err);
+    //     res.statusCode= 500;
+    //     res.end('File not found!')
+    // });
+
+
+    // Method 3
+    // pipe operator pipes output of readable steams into the input of a writeable
+    //stream which handles the issues presented in Method 2 of backpressure
+
     const readable = fs.createReadStream('test-file.txt');
-    readable.on('data', (chunk) => {
-        res.write(chunk);
-    });
-    // response end necessary when whole file has been read
-    readable.on('end', () => {
-        res.end();
-    });
-    readable.on('error', err => {
-        console.log(err);
-        res.status(500);
-        res.end('File not found!')
-    });
+    readable.pipe(res);
+    // readableSource.pipe(writeableDest);
+
 });
 
 server.listen(8000, '127.0.0.1', () => {
