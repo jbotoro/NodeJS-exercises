@@ -6,7 +6,20 @@ const express = require('express');
 const app = express();
 
 //middleware: data from body added to request
+
 app.use(express.json());
+
+//create our own middleware
+
+app.use((req,res,next) => {
+    console.log('Hello from the middleware!')
+    next();
+});
+
+app.use((req,res,next) => {
+    req.requestTime = new Date().toISOString();
+    next();
+})
 
 
 
@@ -17,6 +30,7 @@ const tours = JSON.parse(
 const getAllTours = (req, res) => {
     res.status(200).json({
         status: 'success',
+        requestedAt: req.requestTime,
         results: tours.length,
         data: {
             tours
@@ -116,6 +130,7 @@ app.route('/api/v1/tours/:id')
     .delete(deleteTour)
 
 const port = 3000;
+
 
 
 app.listen(port, () => {
