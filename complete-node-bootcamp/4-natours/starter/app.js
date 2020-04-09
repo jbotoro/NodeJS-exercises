@@ -11,6 +11,10 @@ const app = express();
 app.use(morgan('dev'))
 app.use(express.json());
 
+// Serving up static files from a folder instead of a route
+
+app.use(express.static(`${__dirname}/public`))
+
 //create our own middleware
 
 
