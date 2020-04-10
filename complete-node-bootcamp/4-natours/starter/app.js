@@ -42,3 +42,18 @@ app.use('/api/v1/users', userRouter)
 
 module.exports = app;
 
+
+
+const mystery = (a,b) => {
+    let x = a;
+    let y = b;
+
+    while(x !== y){
+        if(x>y){
+            x = x - y;
+        }else{
+            y = y - x;
+        }
+    }
+    return x;
+}
